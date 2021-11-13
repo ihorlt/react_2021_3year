@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import SortComponent from "../../components/sort-component/sort-component";
 import CardItemComponent from "../../components/card-item-component/CardItem-component";
+import { LOCALSTORE_TOTALITEMS } from "../../models/constants";
 
 const GoodsComponent = () => {
     const itemsList = [
@@ -12,7 +13,6 @@ const GoodsComponent = () => {
         {id: 6, name: "Avocado organic each", imgurl: "/imgs/fruits/74150-done_medium.jpg", price: 60},
     ];
 
-    const LOCALSTORE = "LOCAL_STORE";
     const [itemsToSell, setItemsToSell] = useState(itemsList);
     const [totalItems, setTotalItems] = useState([]);
 
@@ -20,18 +20,20 @@ const GoodsComponent = () => {
         if (totalItems && totalItems.length > 0) {
             return;
         }
-        let cardsLocal = window.localStorage.getItem(LOCALSTORE);
+        let cardsLocal = window.localStorage.getItem(LOCALSTORE_TOTALITEMS);
         cardsLocal = cardsLocal ? JSON.parse(cardsLocal) : cardsLocal;
         if(cardsLocal && Array.isArray(cardsLocal) && cardsLocal.length > 0) {
             setTotalItems([...cardsLocal]);
         }
     };
 
-    getLocalStore();
+    useEffect(() => {
+        getLocalStore();
+    });
 
     const addItem = (cardItem) => {
         setTotalItems([...totalItems, cardItem]);
-        window.localStorage.setItem(LOCALSTORE, JSON.stringify(totalItems));
+        window.localStorage.setItem(LOCALSTORE_TOTALITEMS, JSON.stringify(totalItems));
     };
 
     const removeItem = (cardItem) => {
@@ -43,7 +45,7 @@ const GoodsComponent = () => {
         });
         totalItems.splice(foundItemIndex, 1);
         setTotalItems([...totalItems]);
-        window.localStorage.setItem(LOCALSTORE, JSON.stringify(totalItems));
+        window.localStorage.setItem(LOCALSTORE_TOTALITEMS, JSON.stringify(totalItems));
     };
 
     const setSortTotalItems = (cards) => {

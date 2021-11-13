@@ -1,23 +1,13 @@
 import React from 'react';
+import { LOCALSTORE_TOTALITEMS } from "../../models/constants";
+import CardItemComponent from "../../components/card-item-component/CardItem-component";
 
 const BasketComponent = () => {
-    const LOCALSTORE = "LOCAL_STORE";
-
 
     const getLocalStore = () => {
-        let cardsLocal = window.localStorage.getItem(LOCALSTORE);
-        cardsLocal = cardsLocal ? JSON.parse(cardsLocal) : cardsLocal;
-        let cards = "Немає вибраних товарів";
-        if(cardsLocal && Array.isArray(cardsLocal) && cardsLocal.length > 0) {
-            cards =  cardsLocal.map(item => {
-                return(
-                    <div key={item.id}>
-                        {item.name}
-                    </div>
-                );
-            });
-        }
-        return (cards);
+        let cardsLocal = window.localStorage.getItem(LOCALSTORE_TOTALITEMS);
+        cardsLocal = cardsLocal ? JSON.parse(cardsLocal) : "Немає вибраних товарів";
+        return (cardsLocal);
     };
 
     return (
@@ -28,9 +18,12 @@ const BasketComponent = () => {
                 </div>
             </div>
             <div className="row">
-                <div className="col-12 col-lg-6">
-                    {getLocalStore()}
-                </div>
+                {Array.isArray(getLocalStore()) && getLocalStore().map((item, index)=> {
+                    return (
+                        <CardItemComponent key={index} card={item}
+                                           totalItems={getLocalStore().filter(itemFilter => itemFilter.id === item.id)} />
+                    );
+                })}
             </div>
         </div>
     );
